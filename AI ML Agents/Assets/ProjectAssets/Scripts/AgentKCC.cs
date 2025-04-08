@@ -5,6 +5,10 @@ public class AgentKCC : MonoBehaviour, ICharacterController
 {
     public KinematicCharacterMotor Motor;
 
+    [Header("Settings")]
+    public Vector3 gravity;
+    public float moveSpeed;
+    public Collider[] ignoredColliders;
 
     private void Awake()
     {
@@ -23,12 +27,22 @@ public class AgentKCC : MonoBehaviour, ICharacterController
     {
 
     }
+
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
     }
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
+        if (IsGrounded())
+        {
+
+        }
+        else
+        {
+            currentVelocity += gravity * deltaTime;
+        }
+
     }
     public void AfterCharacterUpdate(float deltaTime)
     {
@@ -40,6 +54,17 @@ public class AgentKCC : MonoBehaviour, ICharacterController
 
     public bool IsColliderValidForCollisions(Collider coll)
     {
+        if (ignoredColliders != null)
+        {
+            for (int i = 0; i < ignoredColliders.Length; i++)
+            {
+                if (coll == ignoredColliders[i])
+                {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 
@@ -63,5 +88,11 @@ public class AgentKCC : MonoBehaviour, ICharacterController
     {
     }
 
+    #region --- Internal Functions ---
+    private bool IsGrounded()
+    {
+        return Motor.GroundingStatus.IsStableOnGround;
+    }
 
+    #endregion
 }
