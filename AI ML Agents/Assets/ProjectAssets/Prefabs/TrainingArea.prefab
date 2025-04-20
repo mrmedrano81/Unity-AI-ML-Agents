@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 8
+    VectorObservationSize: 9
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -161,7 +161,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 94d24e382469cb540b616bb6b4366cba, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 4f0a18d92525e054db4a7fb39500bc80, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: RollerBall
@@ -189,8 +189,17 @@ MonoBehaviour:
   target: {fileID: 3624075982691838815}
   floorDimensions: {x: 11, y: 11}
   fallingY: 0
-  minDistance: 1.42
+  minDistance: 1.1
   forceMultiplier: 10
+  velocityNearThreshold: 4
+  rewardForReachingTarget: 100
+  rewardForSpeedingNearTarget: -20
+  rewardMultiplierForSpeed: 50
+  maxRewardForSpeed: 80
+  VelocityMagnitude: 0
+  fastestTimeToReachTarget: -1
+  timeToTarget: 0
+  distanceToTarget: 0
 --- !u!114 &3514639621012156722
 MonoBehaviour:
   m_ObjectHideFlags: 0

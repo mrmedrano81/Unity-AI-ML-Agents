@@ -11,6 +11,19 @@ public class RollerAgent : Agent
     public float fallingY = -0.6f;
     public float minDistance = 1.42f;
     public float forceMultiplier = 10f;
+    public float velocityNearThreshold = 2f;
+
+    [Header("Reward Parameters")]
+    public float rewardForReachingTarget = 100f;
+    public float rewardForSpeedingNearTarget = -20f;
+    public float rewardMultiplierForSpeed = 1f;
+    public float maxRewardForSpeed = 20f;
+
+    [Header("DEBUG")]
+    public float VelocityMagnitude = 0f;
+    public float fastestTimeToReachTarget = -1f;
+    public float timeToTarget = 0f;
+    public float distanceToTarget = 0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,8 +31,16 @@ public class RollerAgent : Agent
         rBody = GetComponent<Rigidbody>();
     }
 
+    private void Update()
+    {
+        VelocityMagnitude = rBody.linearVelocity.magnitude;
+    }
+
     public override void OnEpisodeBegin()
     {
+        timeToTarget = 0f;
+        distanceToTarget = Vector3.Distance(transform.localPosition, target.localPosition);
+
         if (transform.localPosition.y < fallingY)
         {
             // If the Agent fell, zero its momentum
@@ -57,11 +78,17 @@ public class RollerAgent : Agent
         // Agent velocity
         sensor.AddObservation(rBody.linearVelocity.x);
         sensor.AddObservation(rBody.linearVelocity.z);
+
+        // Agent's time to target
+        sensor.AddObservation(timeToTarget);
     }
 
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        timeToTarget += Time.deltaTime;
+
+        float reward = 0f;
         Vector3 controlSignal = Vector3.zero;
         controlSignal.x = actions.ContinuousActions[0];
         controlSignal.z = actions.ContinuousActions[1];
@@ -71,10 +98,21 @@ public class RollerAgent : Agent
 
         if (distanceToTarget < minDistance)
         {
-            SetReward(1.0f);
+
+            float distanceReward = Mathf.Clamp((distanceToTarget / timeToTarget) * rewardMultiplierForSpeed, 0,maxRewardForSpeed);
+
+            reward += distanceReward;
+
+            if (rBody.linearVelocity.magnitude > velocityNearThreshold)
+            {
+                reward += rewardForSpeedingNearTarget;
+            }
+
+            reward += rewardForReachingTarget;
+
+            SetReward(reward);
             EndEpisode();
         }
-        //
         else if (transform.localPosition.y < fallingY)
         {
             EndEpisode();
@@ -106,5 +144,4 @@ public class RollerAgent : Agent
         Gizmos.DrawLine(topRight, bottomRight);
         Gizmos.DrawLine(bottomRight, bottomLeft);
     }
-
 }
