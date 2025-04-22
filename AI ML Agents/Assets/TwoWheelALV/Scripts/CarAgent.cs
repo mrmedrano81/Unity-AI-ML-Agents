@@ -211,7 +211,8 @@ public class CarAgent : Agent
 
         float facingAlignment = Vector3.Dot(transform.forward, toTarget.normalized);
 
-        AddReward(0.01f * rigidBody.linearVelocity.magnitude * (directionAlignment) * facingAlignment); // Encourage facing the target
+        AddReward(0.01f * rigidBody.linearVelocity.magnitude * (directionAlignment)); // Encourage facing the target
+        AddReward(0.001f * facingAlignment);
 
 
         // Avoid division by zero with a small epsilon
