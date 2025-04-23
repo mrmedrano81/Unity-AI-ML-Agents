@@ -1,5 +1,5 @@
 ### AI/ML Agents in Unity Exploration
-This repository documents my exploration into training AI/ML agents within the Unity environment using ML-Agents.
+An exploration into training AI/ML agents within the Unity environment using ML-Agents.
 
 The project currently features examples of training agents to perform basic navigation tasks:
 
